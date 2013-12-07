@@ -18,7 +18,7 @@ For now, it should be considered unstable and pre-alpha.
 
 After cloning this repo, run the following 2 commands:
 
-git submodule init
-git submodule update
+	git submodule init
+	git submodule update
 
 At this point, you'll be able to open the solution file and work with the code.
