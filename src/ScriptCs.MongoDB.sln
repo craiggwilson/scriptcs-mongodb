@@ -13,18 +13,64 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "files", "files", "{3D03A074
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScriptCs.MongoDB", "ScriptCs.MongoDB\ScriptCs.MongoDB.csproj", "{71870FED-DD1B-4DDA-BFA5-27D24E5FC2D5}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "libs", "libs", "{9C84F599-90D6-40D6-871E-A8B1A80E41A6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoDB.Bson", "..\libs\mongo-csharp-driver\MongoDB.Bson\MongoDB.Bson.csproj", "{0E9A3A2A-49CD-4F6C-847C-DC79B4B65CE6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoDB.Driver.Core", "..\libs\mongo-csharp-driver\MongoDB.Driver.Core\MongoDB.Driver.Core.csproj", "{190C9EEE-2412-434F-9EC5-D7DE86AA9E53}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		.NET 4.0 - Debug|Any CPU = .NET 4.0 - Debug|Any CPU
+		.NET 4.0 - Release|Any CPU = .NET 4.0 - Release|Any CPU
+		.NET 4.5 - Debug|Any CPU = .NET 4.5 - Debug|Any CPU
+		.NET 4.5 - Release|Any CPU = .NET 4.5 - Release|Any CPU
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{71870FED-DD1B-4DDA-BFA5-27D24E5FC2D5}..NET 4.0 - Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71870FED-DD1B-4DDA-BFA5-27D24E5FC2D5}..NET 4.0 - Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71870FED-DD1B-4DDA-BFA5-27D24E5FC2D5}..NET 4.0 - Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71870FED-DD1B-4DDA-BFA5-27D24E5FC2D5}..NET 4.0 - Release|Any CPU.Build.0 = Release|Any CPU
+		{71870FED-DD1B-4DDA-BFA5-27D24E5FC2D5}..NET 4.5 - Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71870FED-DD1B-4DDA-BFA5-27D24E5FC2D5}..NET 4.5 - Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71870FED-DD1B-4DDA-BFA5-27D24E5FC2D5}..NET 4.5 - Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71870FED-DD1B-4DDA-BFA5-27D24E5FC2D5}..NET 4.5 - Release|Any CPU.Build.0 = Release|Any CPU
 		{71870FED-DD1B-4DDA-BFA5-27D24E5FC2D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{71870FED-DD1B-4DDA-BFA5-27D24E5FC2D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{71870FED-DD1B-4DDA-BFA5-27D24E5FC2D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{71870FED-DD1B-4DDA-BFA5-27D24E5FC2D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E9A3A2A-49CD-4F6C-847C-DC79B4B65CE6}..NET 4.0 - Debug|Any CPU.ActiveCfg = .NET 4.0 - Debug|Any CPU
+		{0E9A3A2A-49CD-4F6C-847C-DC79B4B65CE6}..NET 4.0 - Debug|Any CPU.Build.0 = .NET 4.0 - Debug|Any CPU
+		{0E9A3A2A-49CD-4F6C-847C-DC79B4B65CE6}..NET 4.0 - Release|Any CPU.ActiveCfg = .NET 4.0 - Release|Any CPU
+		{0E9A3A2A-49CD-4F6C-847C-DC79B4B65CE6}..NET 4.0 - Release|Any CPU.Build.0 = .NET 4.0 - Release|Any CPU
+		{0E9A3A2A-49CD-4F6C-847C-DC79B4B65CE6}..NET 4.5 - Debug|Any CPU.ActiveCfg = .NET 4.5 - Debug|Any CPU
+		{0E9A3A2A-49CD-4F6C-847C-DC79B4B65CE6}..NET 4.5 - Debug|Any CPU.Build.0 = .NET 4.5 - Debug|Any CPU
+		{0E9A3A2A-49CD-4F6C-847C-DC79B4B65CE6}..NET 4.5 - Release|Any CPU.ActiveCfg = .NET 4.5 - Release|Any CPU
+		{0E9A3A2A-49CD-4F6C-847C-DC79B4B65CE6}..NET 4.5 - Release|Any CPU.Build.0 = .NET 4.5 - Release|Any CPU
+		{0E9A3A2A-49CD-4F6C-847C-DC79B4B65CE6}.Debug|Any CPU.ActiveCfg = .NET 4.5 - Debug|Any CPU
+		{0E9A3A2A-49CD-4F6C-847C-DC79B4B65CE6}.Debug|Any CPU.Build.0 = .NET 4.5 - Debug|Any CPU
+		{0E9A3A2A-49CD-4F6C-847C-DC79B4B65CE6}.Release|Any CPU.ActiveCfg = .NET 4.5 - Release|Any CPU
+		{0E9A3A2A-49CD-4F6C-847C-DC79B4B65CE6}.Release|Any CPU.Build.0 = .NET 4.5 - Release|Any CPU
+		{190C9EEE-2412-434F-9EC5-D7DE86AA9E53}..NET 4.0 - Debug|Any CPU.ActiveCfg = .NET 4.0 - Debug|Any CPU
+		{190C9EEE-2412-434F-9EC5-D7DE86AA9E53}..NET 4.0 - Debug|Any CPU.Build.0 = .NET 4.0 - Debug|Any CPU
+		{190C9EEE-2412-434F-9EC5-D7DE86AA9E53}..NET 4.0 - Release|Any CPU.ActiveCfg = .NET 4.0 - Release|Any CPU
+		{190C9EEE-2412-434F-9EC5-D7DE86AA9E53}..NET 4.0 - Release|Any CPU.Build.0 = .NET 4.0 - Release|Any CPU
+		{190C9EEE-2412-434F-9EC5-D7DE86AA9E53}..NET 4.5 - Debug|Any CPU.ActiveCfg = .NET 4.5 - Debug|Any CPU
+		{190C9EEE-2412-434F-9EC5-D7DE86AA9E53}..NET 4.5 - Debug|Any CPU.Build.0 = .NET 4.5 - Debug|Any CPU
+		{190C9EEE-2412-434F-9EC5-D7DE86AA9E53}..NET 4.5 - Release|Any CPU.ActiveCfg = .NET 4.5 - Release|Any CPU
+		{190C9EEE-2412-434F-9EC5-D7DE86AA9E53}..NET 4.5 - Release|Any CPU.Build.0 = .NET 4.5 - Release|Any CPU
+		{190C9EEE-2412-434F-9EC5-D7DE86AA9E53}.Debug|Any CPU.ActiveCfg = .NET 4.5 - Debug|Any CPU
+		{190C9EEE-2412-434F-9EC5-D7DE86AA9E53}.Debug|Any CPU.Build.0 = .NET 4.5 - Debug|Any CPU
+		{190C9EEE-2412-434F-9EC5-D7DE86AA9E53}.Release|Any CPU.ActiveCfg = .NET 4.5 - Release|Any CPU
+		{190C9EEE-2412-434F-9EC5-D7DE86AA9E53}.Release|Any CPU.Build.0 = .NET 4.5 - Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0E9A3A2A-49CD-4F6C-847C-DC79B4B65CE6} = {9C84F599-90D6-40D6-871E-A8B1A80E41A6}
+		{190C9EEE-2412-434F-9EC5-D7DE86AA9E53} = {9C84F599-90D6-40D6-871E-A8B1A80E41A6}
 	EndGlobalSection
 EndGlobal
