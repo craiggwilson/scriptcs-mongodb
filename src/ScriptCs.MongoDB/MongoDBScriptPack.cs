@@ -15,8 +15,7 @@ namespace ScriptCs.MongoDB
             session.AddReference("MongoDB.Driver.dll");
 
             session.ImportNamespace("MongoDB.Bson");
-            session.ImportNamespace("MongoDB.Driver");
-            session.ImportNamespace("MongoDB.Driver.Builders");
+            session.ImportNamespace("ScriptCs.MongoDB");
         }
 
         public IScriptPackContext GetContext()
