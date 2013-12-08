@@ -18,7 +18,7 @@ namespace ScriptCs.MongoDB.Console
             var result = db.RunCommand("{ismaster: 1}");
             System.Console.WriteLine(result);
 
-            var collection = db.GetCollection<BsonDocument>("bar");
+            var collection = db["bar"];
 
             // find all documents and remove them...
             collection.Find().Remove();
@@ -38,7 +38,7 @@ namespace ScriptCs.MongoDB.Console
 
             System.Console.WriteLine(view);
 
-            foreach(var doc in view.AsEnumerable())
+            foreach(var doc in view.AsEnumerable<BsonDocument>())
             {
                 System.Console.WriteLine(doc);
             }

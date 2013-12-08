@@ -12,7 +12,7 @@ using ScriptCs.MongoDB.FluentApi;
 
 namespace ScriptCs.MongoDB
 {
-    public class ScriptCsCollectionView<T>
+    public class ScriptCsCollectionView
     {
         private readonly Pipeline _pipeline;
         private readonly ISession _session;
@@ -49,7 +49,7 @@ namespace ScriptCs.MongoDB
             _pipeline = pipeline;
         }
 
-        public IEnumerable<T> AsEnumerable()
+        public IEnumerable<T> AsEnumerable<T>() where T : class
         {
             QueryArgs args;
             if (_pipeline.TryGetQueryArgs(out args))
@@ -80,9 +80,9 @@ namespace ScriptCs.MongoDB
             throw new NotSupportedException("Agg Framework isn't supported yet.");
         }
 
-        public ScriptCsCollectionView<T> Find(string filter, params object[] parameters)
+        public ScriptCsCollectionView Find(string filter, params object[] parameters)
         {
-            return new ScriptCsCollectionView<T>(
+            return new ScriptCsCollectionView(
                 _session,
                 _collectionNamespace,
                 _readPreference,
@@ -90,9 +90,9 @@ namespace ScriptCs.MongoDB
                 _pipeline.AddMatch(ParameterizingQueryParser.Parse(filter, parameters)));
         }
 
-        public ScriptCsCollectionView<T> Limit(int count)
+        public ScriptCsCollectionView Limit(int count)
         {
-            return new ScriptCsCollectionView<T>(
+            return new ScriptCsCollectionView(
                 _session,
                 _collectionNamespace,
                 _readPreference,
@@ -130,14 +130,14 @@ namespace ScriptCs.MongoDB
             return removeOp.Execute().Response;
         }
 
-        public T SingleOrDefault()
+        public T SingleOrDefault<T>() where T : class
         {
-            return Limit(1).AsEnumerable().FirstOrDefault();
+            return Limit(1).AsEnumerable<T>().FirstOrDefault();
         }
 
-        public ScriptCsCollectionView<T> Skip(int count)
+        public ScriptCsCollectionView Skip(int count)
         {
-            return new ScriptCsCollectionView<T>(
+            return new ScriptCsCollectionView(
                 _session,
                 _collectionNamespace,
                 _readPreference,

@@ -10,7 +10,7 @@ using MongoDB.Driver.Core.Sessions;
 
 namespace ScriptCs.MongoDB
 {
-    public class ScriptCsCollection<T> where T : class
+    public class ScriptCsCollection
     {
         private readonly ICluster _cluster;
         private readonly ISession _session;
@@ -37,7 +37,7 @@ namespace ScriptCs.MongoDB
             _writeConcern = writeConcern;
         }
 
-        public IEnumerable<BsonDocument> Insert(T document, params T[] documents)
+        public IEnumerable<BsonDocument> Insert<T>(T document, params T[] documents) where T : class
         {
             if (document == null) throw new ArgumentNullException("document");
 
@@ -60,25 +60,25 @@ namespace ScriptCs.MongoDB
             return Enumerable.Empty<BsonDocument>();
         }
 
-        public ScriptCsCollectionView<T> Find()
+        public ScriptCsCollectionView Find()
         {
-            return new ScriptCsCollectionView<T>(
+            return new ScriptCsCollectionView(
                 _session,
                 _collectionNamespace,
                 _readPreference,
                 _writeConcern);
         }
 
-        public ScriptCsCollectionView<T> Find(string filter, params object[] parameters)
+        public ScriptCsCollectionView Find(string filter, params object[] parameters)
         {
             return Find().Find(filter, parameters);
         }
 
-        public ScriptCsCollection<T> WithReadPreference(ReadPreference readPreference)
+        public ScriptCsCollection WithReadPreference(ReadPreference readPreference)
         {
             if (readPreference == null) throw new ArgumentNullException("readPreference");
 
-            return new ScriptCsCollection<T>(
+            return new ScriptCsCollection(
                 _cluster,
                 _session,
                 _collectionNamespace,
@@ -86,11 +86,11 @@ namespace ScriptCs.MongoDB
                 _writeConcern);
         }
 
-        public ScriptCsCollection<T> WithWriteConcern(WriteConcern writeConcern)
+        public ScriptCsCollection WithWriteConcern(WriteConcern writeConcern)
         {
             if(writeConcern == null) throw new ArgumentNullException("writeConcern");
             
-            return new ScriptCsCollection<T>(
+            return new ScriptCsCollection(
                 _cluster,
                 _session,
                 _collectionNamespace,

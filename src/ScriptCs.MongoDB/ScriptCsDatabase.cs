@@ -34,6 +34,11 @@ namespace ScriptCs.MongoDB
             _session = new ClusterSession(_cluster);
         }
 
+        public ScriptCsCollection this[string collectionName]
+        {
+            get { return GetCollection(collectionName); }
+        }
+
         public void Close()
         {
             if (!_disposed)
@@ -44,9 +49,9 @@ namespace ScriptCs.MongoDB
             }
         }
 
-        public ScriptCsCollection<T> GetCollection<T>(string collectionName) where T : class
+        public ScriptCsCollection GetCollection(string collectionName)
         {
-            return new ScriptCsCollection<T>(
+            return new ScriptCsCollection(
                 _cluster, 
                 _session, 
                 new CollectionNamespace(_dbNamespace.DatabaseName, collectionName),
