@@ -8,12 +8,13 @@ using MongoDB.Driver.Core;
 using MongoDB.Driver.Core.Connections;
 using MongoDB.Driver.Core.Operations;
 using MongoDB.Driver.Core.Sessions;
+using ScriptCs.MongoDB.FluentApi;
 
 namespace ScriptCs.MongoDB
 {
     public class ScriptCsCollectionView<T>
     {
-        private readonly ViewArgs _args;
+        private readonly Pipeline _pipeline;
         private readonly ISession _session;
         private readonly CollectionNamespace _collectionNamespace;
         private readonly ReadPreference _readPreference;
@@ -24,7 +25,7 @@ namespace ScriptCs.MongoDB
             CollectionNamespace collectionNamespace,
             ReadPreference readPreference,
             WriteConcern writeConcern)
-            : this(session, collectionNamespace, readPreference, writeConcern, new ViewArgs())
+            : this(session, collectionNamespace, readPreference, writeConcern, new Pipeline())
         {
         }
 
@@ -33,67 +34,96 @@ namespace ScriptCs.MongoDB
             CollectionNamespace collectionNamespace,
             ReadPreference readPreference,
             WriteConcern writeConcern,
-            ViewArgs args)
+            Pipeline pipeline)
         {
             if (session == null) throw new ArgumentNullException("session");
             if (collectionNamespace == null) throw new ArgumentNullException("collectionNamespace");
             if (readPreference == null) throw new ArgumentNullException("readPreference");
             if (writeConcern == null) throw new ArgumentNullException("writeConcern");
-            if (args == null) throw new ArgumentNullException("args");
+            if (pipeline == null) throw new ArgumentNullException("pipeline");
 
             _session = session;
             _collectionNamespace = collectionNamespace;
             _readPreference = readPreference;
             _writeConcern = writeConcern;
-            _args = args;
+            _pipeline = pipeline;
         }
 
         public IEnumerable<T> AsEnumerable()
         {
-            var queryOp = new QueryOperation<T>
+            QueryArgs args;
+            if (_pipeline.TryGetQueryArgs(out args))
             {
-                Collection = _collectionNamespace,
-                Session = _session,
-                Limit = _args.Take ?? 0,
-                Query = _args.Filter ?? new BsonDocument(),
-                Skip = _args.Skip ?? 0
-            };
+                var queryOp = new QueryOperation<T>
+                {
+                    Collection = _collectionNamespace,
+                    Session = _session,
+                    Limit = args.Limit ?? 0,
+                    Query = args.Filter ?? new BsonDocument(),
+                    Skip = args.Skip ?? 0
+                };
 
-            return queryOp;
+                return queryOp;
+            }
+            else
+            {
+                var aggregateOp = new AggregateOperation<T>
+                {
+                    Collection = _collectionNamespace,
+                    Session = _session,
+                    Pipeline = _pipeline.ToBsonDocumentArray()
+                };
+
+                return aggregateOp;
+            }
+
+            throw new NotSupportedException("Agg Framework isn't supported yet.");
         }
 
         public ScriptCsCollectionView<T> Find(string filter, params object[] parameters)
         {
-            var args = _args.Copy();
-            args.Filter = ParameterizingQueryParser.Parse(filter, parameters);
             return new ScriptCsCollectionView<T>(
                 _session,
                 _collectionNamespace,
                 _readPreference,
                 _writeConcern,
-                args);
+                _pipeline.AddMatch(ParameterizingQueryParser.Parse(filter, parameters)));
         }
 
-        public ScriptCsCollectionView<T> Limit(int take)
+        public ScriptCsCollectionView<T> Limit(int count)
         {
-            var args = _args.Copy();
-            args.Take = take;
             return new ScriptCsCollectionView<T>(
                 _session,
                 _collectionNamespace,
                 _readPreference,
                 _writeConcern,
-                args);
+                _pipeline.AddLimit(count));
         }
 
         public BsonDocument Remove()
         {
+            QueryArgs args;
+            if(!_pipeline.TryGetQueryArgs(out args))
+            {
+                throw new NotSupportedException("The currently defined pipeline does not support removal.");
+            }
+
+            if(args.Limit.HasValue && args.Limit.Value != 1)
+            {
+                throw new NotSupportedException("Limit must either be unspecified or equal 1 when removing documents.");
+            }
+
+            if(args.Skip.HasValue)
+            {
+                throw new NotSupportedException("Skip cannot be specified when removing documents.");
+            }
+
             var removeOp = new RemoveOperation
             {
                 Collection = _collectionNamespace,
                 Session = _session,
-                Query = _args.Filter ?? new BsonDocument(),
-                IsMulti = true,
+                Query = args.Filter ?? new BsonDocument(),
+                IsMulti = !args.Limit.HasValue,
                 WriteConcern = _writeConcern
             };
 
@@ -105,33 +135,32 @@ namespace ScriptCs.MongoDB
             return Limit(1).AsEnumerable().FirstOrDefault();
         }
 
-        public ScriptCsCollectionView<T> Skip(int skip)
+        public ScriptCsCollectionView<T> Skip(int count)
         {
-            var args = _args.Copy();
-            args.Skip = skip;
             return new ScriptCsCollectionView<T>(
                 _session,
                 _collectionNamespace,
                 _readPreference,
                 _writeConcern,
-                args);
+                _pipeline.AddSkip(count));
         }
 
-        internal class ViewArgs
+        public override string ToString()
         {
-            public BsonDocument Filter;
-            public int? Skip;
-            public int? Take;
-
-            public ViewArgs Copy()
+            QueryArgs args;
+            if(_pipeline.TryGetQueryArgs(out args))
             {
-                return new ViewArgs
-                {
-                    Filter = Filter == null ? null : (BsonDocument)Filter.DeepClone(),
-                    Skip = Skip,
-                    Take = Take
-                };
+                var ops = new List<string>();
+                if(args.Skip.HasValue)
+                    ops.Add("skip(" + args.Skip + ")");
+                if (args.Limit.HasValue)
+                    ops.Add("limit(" + args.Limit + ")");
+                ops.Add("find(" + args.Filter ?? new BsonDocument() + ")");
+
+                return string.Join(".", ops);
             }
+
+            return "aggregate(" + new BsonArray(_pipeline.ToBsonDocumentArray()) + ")";
         }
     }
 }

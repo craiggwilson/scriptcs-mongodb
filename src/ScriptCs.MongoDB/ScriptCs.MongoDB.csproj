@@ -45,6 +45,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FluentApi\IOptimizer.cs" />
+    <Compile Include="FluentApi\LimitOp.cs" />
+    <Compile Include="FluentApi\MatchCombiner.cs" />
+    <Compile Include="FluentApi\MatchOp.cs" />
+    <Compile Include="FluentApi\Op.cs" />
+    <Compile Include="FluentApi\OpType.cs" />
+    <Compile Include="FluentApi\Pipeline.cs" />
+    <Compile Include="FluentApi\QueryArgs.cs" />
+    <Compile Include="FluentApi\SkipLimitCombiner.cs" />
+    <Compile Include="FluentApi\SkipOp.cs" />
     <Compile Include="QueryParser.cs" />
     <Compile Include="ScriptCsCollection.cs" />
     <Compile Include="ScriptCsCollectionView.cs" />

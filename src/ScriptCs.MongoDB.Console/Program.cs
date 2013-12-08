@@ -29,9 +29,14 @@ namespace ScriptCs.MongoDB.Console
 
             // find all documents where x > 10, skip 2, and take 3
             var view = collection
-                .Find("{x: {$gt: @0}}", 10)
+                .Find()
+                .Limit(10)
+                .Limit(4)
                 .Skip(2)
-                .Limit(3);
+                .Find("{x: {$gt: @0}}", 10)
+                .Find("{x: 8}");
+
+            System.Console.WriteLine(view);
 
             foreach(var doc in view.AsEnumerable())
             {
