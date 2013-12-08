@@ -27,7 +27,9 @@ namespace ScriptCs.MongoDB.Console
             for (int i = 0; i < 10; i++)
                 collection.Insert(new BsonDocument("x", i * 2));
 
-            // find all documents where x > 10, skip 2, and take 3
+            // skip the first 2 docs, take the next 2 docs, and return the ones
+            // where x > 10 && x == 8 
+            // hint: we won't find any...
             var view = collection
                 .Find()
                 .Limit(10)
@@ -39,9 +41,7 @@ namespace ScriptCs.MongoDB.Console
             System.Console.WriteLine(view);
 
             foreach(var doc in view.AsEnumerable<BsonDocument>())
-            {
                 System.Console.WriteLine(doc);
-            }
 
             System.Console.WriteLine();
             System.Console.WriteLine("Press <any> key to exit.");

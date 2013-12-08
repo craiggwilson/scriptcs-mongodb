@@ -31,7 +31,6 @@ namespace ScriptCs.MongoDB.FluentApi
         {
             var copy = Copy();
             copy.Push(new LimitOp(count));
-            copy.Optimize();
             return copy;
         }
 
@@ -39,7 +38,6 @@ namespace ScriptCs.MongoDB.FluentApi
         {
             var copy = Copy();
             copy.Push(new MatchOp(filter));
-            copy.Optimize();
             return copy;
         }
 
@@ -47,7 +45,6 @@ namespace ScriptCs.MongoDB.FluentApi
         {
             var copy = Copy();
             copy.Push(new SkipOp(count));
-            copy.Optimize();
             return copy;
         }
 
@@ -64,12 +61,14 @@ namespace ScriptCs.MongoDB.FluentApi
                 switch (op.OpType)
                 {
                     case OpType.Match:
+                        if (args.Limit != null) goto default;
+                        if (args.Skip != null) goto default;
                         if (args.Filter != null) goto default;
                         args.Filter = ((MatchOp)op).Filter;
                         break;
                     case OpType.Limit:
                         if (args.Limit != null) goto default;
-                        if(args.Filter != null) goto default;
+                        if (args.Filter != null) goto default;
                         args.Limit = ((LimitOp)op).Count;
                         break;
                     case OpType.Skip:
@@ -103,6 +102,7 @@ namespace ScriptCs.MongoDB.FluentApi
         private void Push(Op op)
         {
             _ops.Add(op);
+            Optimize();
         }
     }
 }
