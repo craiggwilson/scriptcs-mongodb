@@ -74,6 +74,18 @@ namespace ScriptCs.MongoDB
                 args);
         }
 
+        public ScriptCsCollectionView<T> Limit(int take)
+        {
+            var args = _args.Copy();
+            args.Take = take;
+            return new ScriptCsCollectionView<T>(
+                _session,
+                _collectionNamespace,
+                _readPreference,
+                _writeConcern,
+                args);
+        }
+
         public BsonDocument Remove()
         {
             var removeOp = new RemoveOperation
@@ -90,25 +102,13 @@ namespace ScriptCs.MongoDB
 
         public T SingleOrDefault()
         {
-            return Take(1).AsEnumerable().FirstOrDefault();
+            return Limit(1).AsEnumerable().FirstOrDefault();
         }
 
         public ScriptCsCollectionView<T> Skip(int skip)
         {
             var args = _args.Copy();
             args.Skip = skip;
-            return new ScriptCsCollectionView<T>(
-                _session,
-                _collectionNamespace,
-                _readPreference,
-                _writeConcern,
-                args);
-        }
-
-        public ScriptCsCollectionView<T> Take(int take)
-        {
-            var args = _args.Copy();
-            args.Take = take;
             return new ScriptCsCollectionView<T>(
                 _session,
                 _collectionNamespace,

@@ -31,7 +31,7 @@ namespace ScriptCs.MongoDB.Console
             var view = collection
                 .Find("{x: {$gt: @0}}", 10)
                 .Skip(2)
-                .Take(3);
+                .Limit(3);
 
             foreach(var doc in view.AsEnumerable())
             {
