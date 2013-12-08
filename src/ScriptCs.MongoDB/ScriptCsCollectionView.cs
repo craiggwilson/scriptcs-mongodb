@@ -80,16 +80,6 @@ namespace ScriptCs.MongoDB
             throw new NotSupportedException("Agg Framework isn't supported yet.");
         }
 
-        public ScriptCsCollectionView Find(string filter, params object[] parameters)
-        {
-            return new ScriptCsCollectionView(
-                _session,
-                _collectionNamespace,
-                _readPreference,
-                _writeConcern,
-                _pipeline.AddMatch(ParameterizingQueryParser.Parse(filter, parameters)));
-        }
-
         public ScriptCsCollectionView Limit(int count)
         {
             return new ScriptCsCollectionView(
@@ -98,6 +88,16 @@ namespace ScriptCs.MongoDB
                 _readPreference,
                 _writeConcern,
                 _pipeline.AddLimit(count));
+        }
+
+        public ScriptCsCollectionView Match(string filter, params object[] parameters)
+        {
+            return new ScriptCsCollectionView(
+                _session,
+                _collectionNamespace,
+                _readPreference,
+                _writeConcern,
+                _pipeline.AddMatch(ParameterizingQueryParser.Parse(filter, parameters)));
         }
 
         public BsonDocument Remove()

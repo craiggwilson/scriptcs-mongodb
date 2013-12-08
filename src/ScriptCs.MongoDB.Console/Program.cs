@@ -35,8 +35,8 @@ namespace ScriptCs.MongoDB.Console
                 .Limit(10)
                 .Limit(4)
                 .Skip(2)
-                .Find("{x: {$gt: @0}}", 10)
-                .Find("{x: 8}");
+                .Match("{x: {$gt: @0}}", 10)
+                .Match("{x: 8}");
 
             System.Console.WriteLine(view);
 

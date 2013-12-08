@@ -71,7 +71,7 @@ namespace ScriptCs.MongoDB
 
         public ScriptCsCollectionView Find(string filter, params object[] parameters)
         {
-            return Find().Find(filter, parameters);
+            return Find().Match(filter, parameters);
         }
 
         public ScriptCsCollection WithReadPreference(ReadPreference readPreference)
