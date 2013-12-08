@@ -55,7 +55,7 @@ namespace ScriptCs.MongoDB
                 Collection = _collectionNamespace,
                 Session = _session,
                 Limit = _args.Take ?? 0,
-                Query = _args.Filter,
+                Query = _args.Filter ?? new BsonDocument(),
                 Skip = _args.Skip ?? 0
             };
 
@@ -72,6 +72,20 @@ namespace ScriptCs.MongoDB
                 _readPreference,
                 _writeConcern,
                 args);
+        }
+
+        public BsonDocument Remove()
+        {
+            var removeOp = new RemoveOperation
+            {
+                Collection = _collectionNamespace,
+                Session = _session,
+                Query = _args.Filter ?? new BsonDocument(),
+                IsMulti = true,
+                WriteConcern = _writeConcern
+            };
+
+            return removeOp.Execute().Response;
         }
 
         public T SingleOrDefault()

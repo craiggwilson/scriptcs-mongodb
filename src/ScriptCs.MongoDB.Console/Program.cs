@@ -20,9 +20,14 @@ namespace ScriptCs.MongoDB.Console
 
             var collection = db.GetCollection<BsonDocument>("bar");
 
-            //for (int i = 0; i < 10; i++)
-            //    collection.Insert(new BsonDocument("x", i * 2));
+            // find all documents and remove them...
+            collection.Find().Remove();
 
+            // insert 10 documents
+            for (int i = 0; i < 10; i++)
+                collection.Insert(new BsonDocument("x", i * 2));
+
+            // find all documents where x > 10, skip 2, and take 3
             var view = collection
                 .Find("{x: {$gt: @0}}", 10)
                 .Skip(2)
