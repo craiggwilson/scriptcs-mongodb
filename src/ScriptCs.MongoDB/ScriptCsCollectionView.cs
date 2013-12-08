@@ -62,10 +62,10 @@ namespace ScriptCs.MongoDB
             return queryOp;
         }
 
-        public ScriptCsCollectionView<T> Find(string filter)
+        public ScriptCsCollectionView<T> Find(string filter, params object[] parameters)
         {
             var args = _args.Copy();
-            args.Filter = ParameterizingQueryParser.Parse(filter);
+            args.Filter = ParameterizingQueryParser.Parse(filter, parameters);
             return new ScriptCsCollectionView<T>(
                 _session,
                 _collectionNamespace,

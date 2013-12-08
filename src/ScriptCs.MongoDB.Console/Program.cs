@@ -24,7 +24,7 @@ namespace ScriptCs.MongoDB.Console
             //    collection.Insert(new BsonDocument("x", i * 2));
 
             var view = collection
-                .Find("{x: {$gt: 10 }}")
+                .Find("{x: {$gt: @0}}", 10)
                 .Skip(2)
                 .Take(3);
 

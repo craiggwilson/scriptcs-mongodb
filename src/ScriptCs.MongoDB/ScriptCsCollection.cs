@@ -69,9 +69,9 @@ namespace ScriptCs.MongoDB
                 _writeConcern);
         }
 
-        public ScriptCsCollectionView<T> Find(string filter)
+        public ScriptCsCollectionView<T> Find(string filter, params object[] parameters)
         {
-            return Find().Find(filter);
+            return Find().Find(filter, parameters);
         }
 
         public ScriptCsCollection<T> WithReadPreference(ReadPreference readPreference)
