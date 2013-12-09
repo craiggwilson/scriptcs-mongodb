@@ -69,33 +69,9 @@ namespace ScriptCs.MongoDB
                 _writeConcern);
         }
 
-        public ScriptCsCollectionView Find(string filter, params object[] parameters)
+        public ScriptCsCollectionView Find(string filter)
         {
-            return Find().Match(filter, parameters);
-        }
-
-        public ScriptCsCollection WithReadPreference(ReadPreference readPreference)
-        {
-            if (readPreference == null) throw new ArgumentNullException("readPreference");
-
-            return new ScriptCsCollection(
-                _cluster,
-                _session,
-                _collectionNamespace,
-                readPreference,
-                _writeConcern);
-        }
-
-        public ScriptCsCollection WithWriteConcern(WriteConcern writeConcern)
-        {
-            if(writeConcern == null) throw new ArgumentNullException("writeConcern");
-            
-            return new ScriptCsCollection(
-                _cluster,
-                _session,
-                _collectionNamespace,
-                _readPreference,
-                writeConcern);
+            return Find().Match(filter);
         }
     }
 }

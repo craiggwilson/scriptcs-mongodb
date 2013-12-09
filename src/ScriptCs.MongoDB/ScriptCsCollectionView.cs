@@ -95,17 +95,17 @@ namespace ScriptCs.MongoDB
                 _pipeline.AddLimit(count));
         }
 
-        public ScriptCsCollectionView Match(string filter, params object[] parameters)
+        public ScriptCsCollectionView Match(string filter)
         {
             return new ScriptCsCollectionView(
                 _session,
                 _collectionNamespace,
                 _readPreference,
                 _writeConcern,
-                _pipeline.AddMatch(ParameterizingJsonParser.Parse(filter, parameters)));
+                _pipeline.AddMatch(ParameterizingJsonParser.Parse(filter)));
         }
 
-        public BsonDocument PutOne(string document, params object[] parameters)
+        public BsonDocument PutOne(string document)
         {
             var args = GetQueryArgsForWriteOperation();
 
@@ -115,7 +115,7 @@ namespace ScriptCs.MongoDB
                 Session = _session,
                 IsMulti = false,
                 Query = args.Filter,
-                Update = ParameterizingJsonParser.Parse(document, parameters),
+                Update = ParameterizingJsonParser.Parse(document),
                 Upsert = true
             };
 
@@ -165,7 +165,7 @@ namespace ScriptCs.MongoDB
                 _pipeline.AddSort(ParameterizingJsonParser.Parse(sort)));
         }
 
-        public BsonDocument Update(string update, params object[] parameters)
+        public BsonDocument Update(string update)
         {
             var args = GetQueryArgsForWriteOperation();
 
@@ -175,7 +175,7 @@ namespace ScriptCs.MongoDB
                 Session = _session,
                 IsMulti = !args.Limit.HasValue,
                 Query = args.Filter,
-                Update = ParameterizingJsonParser.Parse(update, parameters),
+                Update = ParameterizingJsonParser.Parse(update),
                 Upsert = false
             };
 
@@ -183,7 +183,7 @@ namespace ScriptCs.MongoDB
             return result == null ? null : result.Response;
         }
 
-        public BsonDocument Upsert(string update, params object[] parameters)
+        public BsonDocument Upsert(string update)
         {
             var args = GetQueryArgsForWriteOperation();
 
@@ -193,7 +193,7 @@ namespace ScriptCs.MongoDB
                 Session = _session,
                 IsMulti = !args.Limit.HasValue,
                 Query = args.Filter,
-                Update = ParameterizingJsonParser.Parse(update, parameters),
+                Update = ParameterizingJsonParser.Parse(update),
                 Upsert = false
             };
 

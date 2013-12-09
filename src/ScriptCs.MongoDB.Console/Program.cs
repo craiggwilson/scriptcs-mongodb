@@ -28,7 +28,7 @@ namespace ScriptCs.MongoDB.Console
                 collection.Insert(new BsonDocument("x", i * 2));
 
             var view = collection.Find()
-                .Match("{x: {$gt: @0}}", 4)
+                .Match("{x: {$gt: 4}}")
                 .Sort("{x: -1}");
 
             System.Console.WriteLine(view);

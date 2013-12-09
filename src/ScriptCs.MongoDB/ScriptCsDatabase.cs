@@ -59,14 +59,14 @@ namespace ScriptCs.MongoDB
                 _writeConcern);
         }
 
-        public BsonDocument RunCommand(string command, ReadPreference readPreference = null, object[] parameters = null)
+        public BsonDocument RunCommand(string command)
         {
             var commandOp = new GenericCommandOperation<CommandResult>
             {
                 Database = _dbNamespace,
                 Session = _session,
-                Command = ParameterizingJsonParser.Parse(command, parameters),
-                ReadPreference = readPreference ?? ReadPreference.Primary,
+                Command = ParameterizingJsonParser.Parse(command),
+                ReadPreference = _readPreference
             };
 
             var result = commandOp.Execute();
