@@ -65,7 +65,7 @@ namespace ScriptCs.MongoDB
             {
                 Database = _dbNamespace,
                 Session = _session,
-                Command = ParameterizingQueryParser.Parse(command, parameters),
+                Command = ParameterizingJsonParser.Parse(command, parameters),
                 ReadPreference = readPreference ?? ReadPreference.Primary,
             };
 

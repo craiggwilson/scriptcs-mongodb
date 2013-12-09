@@ -11,7 +11,7 @@ using MongoDB.Bson.Serialization.Serializers;
 
 namespace ScriptCs.MongoDB
 {
-    internal static class ParameterizingQueryParser
+    internal static class ParameterizingJsonParser
     {
         public static BsonDocument Parse(string json, params object[] parameters)
         {

@@ -58,7 +58,7 @@
     <Compile Include="FluentApi\SkipOp.cs" />
     <Compile Include="FluentApi\SortCombiner.cs" />
     <Compile Include="FluentApi\SortOp.cs" />
-    <Compile Include="QueryParser.cs" />
+    <Compile Include="ParameterizingJsonParser.cs" />
     <Compile Include="ScriptCsCollection.cs" />
     <Compile Include="ScriptCsCollectionView.cs" />
     <Compile Include="ScriptCsDatabase.cs" />

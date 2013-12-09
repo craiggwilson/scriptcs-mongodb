@@ -83,8 +83,6 @@ namespace ScriptCs.MongoDB
 
                 return aggregateOp;
             }
-
-            throw new NotSupportedException("Agg Framework isn't supported yet.");
         }
 
         public ScriptCsCollectionView Limit(int count)
@@ -104,26 +102,30 @@ namespace ScriptCs.MongoDB
                 _collectionNamespace,
                 _readPreference,
                 _writeConcern,
-                _pipeline.AddMatch(ParameterizingQueryParser.Parse(filter, parameters)));
+                _pipeline.AddMatch(ParameterizingJsonParser.Parse(filter, parameters)));
+        }
+
+        public BsonDocument PutOne(string document, params object[] parameters)
+        {
+            var args = GetQueryArgsForWriteOperation();
+
+            var updateOp = new UpdateOperation
+            {
+                Collection = _collectionNamespace,
+                Session = _session,
+                IsMulti = false,
+                Query = args.Filter,
+                Update = ParameterizingJsonParser.Parse(document, parameters),
+                Upsert = true
+            };
+
+            var result = updateOp.Execute();
+            return result == null ? null : result.Response;
         }
 
         public BsonDocument Remove()
         {
-            QueryArgs args;
-            if(!_pipeline.TryGetQueryArgs(out args))
-            {
-                throw new NotSupportedException("The currently defined pipeline does not support removal.");
-            }
-
-            if(args.Limit.HasValue && args.Limit.Value != 1)
-            {
-                throw new NotSupportedException("Limit must either be unspecified or equal 1 when removing documents.");
-            }
-
-            if(args.Skip.HasValue)
-            {
-                throw new NotSupportedException("Skip cannot be specified when removing documents.");
-            }
+            var args = GetQueryArgsForWriteOperation();
 
             var removeOp = new RemoveOperation
             {
@@ -134,7 +136,8 @@ namespace ScriptCs.MongoDB
                 WriteConcern = _writeConcern
             };
 
-            return removeOp.Execute().Response;
+            var result = removeOp.Execute();
+            return result == null ? null : result.Response;
         }
 
         public T SingleOrDefault<T>() where T : class
@@ -159,7 +162,43 @@ namespace ScriptCs.MongoDB
                 _collectionNamespace,
                 _readPreference,
                 _writeConcern,
-                _pipeline.AddSort(ParameterizingQueryParser.Parse(sort)));
+                _pipeline.AddSort(ParameterizingJsonParser.Parse(sort)));
+        }
+
+        public BsonDocument Update(string update, params object[] parameters)
+        {
+            var args = GetQueryArgsForWriteOperation();
+
+            var updateOp = new UpdateOperation
+            {
+                Collection = _collectionNamespace,
+                Session = _session,
+                IsMulti = !args.Limit.HasValue,
+                Query = args.Filter,
+                Update = ParameterizingJsonParser.Parse(update, parameters),
+                Upsert = false
+            };
+
+            var result = updateOp.Execute();
+            return result == null ? null : result.Response;
+        }
+
+        public BsonDocument Upsert(string update, params object[] parameters)
+        {
+            var args = GetQueryArgsForWriteOperation();
+
+            var updateOp = new UpdateOperation
+            {
+                Collection = _collectionNamespace,
+                Session = _session,
+                IsMulti = !args.Limit.HasValue,
+                Query = args.Filter,
+                Update = ParameterizingJsonParser.Parse(update, parameters),
+                Upsert = false
+            };
+
+            var result = updateOp.Execute();
+            return result == null ? null : result.Response;
         }
 
         public override string ToString()
@@ -180,6 +219,29 @@ namespace ScriptCs.MongoDB
             }
 
             return "aggregate(" + new BsonArray(_pipeline.ToBsonDocumentArray()) + ")";
+        }
+
+        private QueryArgs GetQueryArgsForWriteOperation()
+        {
+            QueryArgs args;
+            if (!_pipeline.TryGetQueryArgs(out args))
+            {
+                throw new NotSupportedException(
+                    string.Format("The currently defined pipeline does not support writing: {0}",
+                    ToString()));
+            }
+
+            if (args.Limit.HasValue && args.Limit.Value != 1)
+            {
+                throw new NotSupportedException("Limit must either be unspecified or equal 1 when writing documents.");
+            }
+
+            if (args.Skip.HasValue)
+            {
+                throw new NotSupportedException("Skip cannot be specified when writing documents.");
+            }
+
+            return args;
         }
     }
 }
