@@ -9,7 +9,7 @@ using MongoDB.Driver.Core;
 
 namespace ScriptCs.MongoDB
 {
-    public class MongoDB : IScriptPackContext
+    public class Mongo : IScriptPackContext
     {
         public ScriptCsDatabase Connect(string connectionString)
         {

@@ -7,12 +7,12 @@ using ScriptCs.Contracts;
 
 namespace ScriptCs.MongoDB
 {
-    public class MongoDBScriptPack : IScriptPack
+    public class MongoScriptPack : IScriptPack
     {
         public void Initialize(IScriptPackSession session)
         {
             session.AddReference("MongoDB.Bson.dll");
-            session.AddReference("MongoDB.Driver.dll");
+            session.AddReference("MongoDB.Driver.Core.dll");
 
             session.ImportNamespace("MongoDB.Bson");
             session.ImportNamespace("ScriptCs.MongoDB");
@@ -20,7 +20,7 @@ namespace ScriptCs.MongoDB
 
         public IScriptPackContext GetContext()
         {
-            return new MongoDB();
+            return new Mongo();
         }
 
         public void Terminate()

@@ -62,8 +62,8 @@
     <Compile Include="ScriptCsCollection.cs" />
     <Compile Include="ScriptCsCollectionView.cs" />
     <Compile Include="ScriptCsDatabase.cs" />
-    <Compile Include="MongoDB.cs" />
-    <Compile Include="MongoDBScriptPack.cs" />
+    <Compile Include="Mongo.cs" />
+    <Compile Include="MongoScriptPack.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

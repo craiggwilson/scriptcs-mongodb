@@ -11,7 +11,7 @@ namespace ScriptCs.MongoDB.Console
     {
         static void Main(string[] args)
         {
-            var mongodb = (MongoDB)new MongoDBScriptPack().GetContext();
+            var mongodb = (Mongo)new MongoScriptPack().GetContext();
 
             var db = mongodb.Connect("mongodb://localhost/foo");
 
