@@ -11,7 +11,9 @@ namespace ScriptCs.MongoDB.FluentApi
     {
         private static IOptimizer[] _optimizers = new IOptimizer[]
         {
+            new MatchSortReorderer(),
             new MatchCombiner(),
+            new SortCombiner(),
             new SkipLimitCombiner()
         };
 
@@ -48,6 +50,13 @@ namespace ScriptCs.MongoDB.FluentApi
             return copy;
         }
 
+        public Pipeline AddSort(BsonDocument sort)
+        {
+            var copy = Copy();
+            copy.Push(new SortOp(sort));
+            return copy;
+        }
+
         public BsonDocument[] ToBsonDocumentArray()
         {
             return _ops.Select(x => x.ToBsonDocument()).ToArray();
@@ -61,21 +70,25 @@ namespace ScriptCs.MongoDB.FluentApi
                 switch (op.OpType)
                 {
                     case OpType.Match:
+                        if (args.Filter != null) goto default;
                         if (args.Limit != null) goto default;
                         if (args.Skip != null) goto default;
-                        if (args.Filter != null) goto default;
                         args.Filter = ((MatchOp)op).Filter;
                         break;
                     case OpType.Limit:
                         if (args.Limit != null) goto default;
-                        if (args.Filter != null) goto default;
                         args.Limit = ((LimitOp)op).Count;
                         break;
                     case OpType.Skip:
                         if (args.Limit != null) goto default;
                         if (args.Skip != null) goto default;
-                        if (args.Filter != null) goto default;
                         args.Skip = ((SkipOp)op).Count;
+                        break;
+                    case OpType.Sort:
+                        if (args.Limit != null) goto default;
+                        if (args.Skip != null) goto default;
+                        if (args.OrderBy != null) goto default;
+                        args.OrderBy = ((SortOp)op).Sort;
                         break;
                     default:
                         args = null;
@@ -93,10 +106,7 @@ namespace ScriptCs.MongoDB.FluentApi
 
         private void Optimize()
         {
-            foreach (var optimizer in _optimizers)
-            {
-                optimizer.TryOptimize(_ops);
-            }
+            while (_optimizers.Any(x => x.TryOptimize(_ops))) ;
         }
 
         private void Push(Op op)

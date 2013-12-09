@@ -11,6 +11,7 @@ namespace ScriptCs.MongoDB.FluentApi
     {
         public BsonDocument Filter;
         public int? Limit;
+        public BsonDocument OrderBy;
         public int? Skip;
     }
 }

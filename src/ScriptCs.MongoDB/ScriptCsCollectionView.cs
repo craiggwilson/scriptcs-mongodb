@@ -54,13 +54,20 @@ namespace ScriptCs.MongoDB
             QueryArgs args;
             if (_pipeline.TryGetQueryArgs(out args))
             {
+                var query = args.Filter ?? new BsonDocument();
+                if(args.OrderBy != null)
+                {
+                    query = new BsonDocument("$query", query);
+                    query.Add("$orderby", args.OrderBy);
+                }
+
                 var queryOp = new QueryOperation<T>
                 {
                     Collection = _collectionNamespace,
                     Session = _session,
                     Limit = args.Limit ?? 0,
                     Query = args.Filter ?? new BsonDocument(),
-                    Skip = args.Skip ?? 0
+                    Skip = args.Skip ?? 0,
                 };
 
                 return queryOp;
@@ -145,17 +152,29 @@ namespace ScriptCs.MongoDB
                 _pipeline.AddSkip(count));
         }
 
+        public ScriptCsCollectionView Sort(string sort)
+        {
+            return new ScriptCsCollectionView(
+                _session,
+                _collectionNamespace,
+                _readPreference,
+                _writeConcern,
+                _pipeline.AddSort(ParameterizingQueryParser.Parse(sort)));
+        }
+
         public override string ToString()
         {
             QueryArgs args;
             if(_pipeline.TryGetQueryArgs(out args))
             {
                 var ops = new List<string>();
-                if(args.Skip.HasValue)
+                ops.Add("find(" + args.Filter ?? new BsonDocument() + ")");
+                if (args.OrderBy != null)
+                    ops.Add("sort(" + args.OrderBy + ")");
+                if (args.Skip.HasValue)
                     ops.Add("skip(" + args.Skip + ")");
                 if (args.Limit.HasValue)
                     ops.Add("limit(" + args.Limit + ")");
-                ops.Add("find(" + args.Filter ?? new BsonDocument() + ")");
 
                 return string.Join(".", ops);
             }
