@@ -66,7 +66,7 @@ namespace ScriptCs.MongoDB
                     Collection = _collectionNamespace,
                     Session = _session,
                     Limit = args.Limit ?? 0,
-                    Query = args.Filter ?? new BsonDocument(),
+                    Query = query,
                     Skip = args.Skip ?? 0,
                 };
 
