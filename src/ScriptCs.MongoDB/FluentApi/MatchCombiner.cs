@@ -22,7 +22,19 @@ namespace ScriptCs.MongoDB.FluentApi
 
                 if (lastOp.OpType == OpType.Match && currentOp.OpType == OpType.Match)
                 {
-                    var combinedFilter = new BsonDocument("$and", new BsonArray { ((MatchOp)lastOp).Filter, ((MatchOp)currentOp).Filter });
+                    var lastMatch = ((MatchOp)lastOp).Filter;
+                    var currentFilter = ((MatchOp)currentOp).Filter;
+
+                    BsonDocument combinedFilter;
+                    if (lastMatch.Contains("$and"))
+                    {
+                        combinedFilter = new BsonDocument(lastMatch.Elements);
+                        lastMatch["$and"].AsBsonArray.Add(currentFilter);
+                    }
+                    else
+                    {
+                       combinedFilter = new BsonDocument("$and", new BsonArray { ((MatchOp)lastOp).Filter, ((MatchOp)currentOp).Filter });
+                    }
                     ops[i - 1] = new MatchOp(combinedFilter);
                     ops.RemoveAt(i);
                     optimized = true;

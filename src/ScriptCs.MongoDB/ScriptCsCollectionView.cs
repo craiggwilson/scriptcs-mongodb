@@ -207,7 +207,7 @@ namespace ScriptCs.MongoDB
             if(_pipeline.TryGetQueryArgs(out args))
             {
                 var ops = new List<string>();
-                ops.Add("find(" + args.Filter ?? new BsonDocument() + ")");
+                ops.Add("find(" + (args.Filter ?? new BsonDocument()) + ")");
                 if (args.OrderBy != null)
                     ops.Add("sort(" + args.OrderBy + ")");
                 if (args.Skip.HasValue)
