@@ -101,9 +101,10 @@ namespace ScriptCs.MongoDB.FluentApi
                         args.OrderBy = ((SortOp)op).Sort;
                         break;
                     case OpType.Project:
-                        args.Fields = ((ProjectOp)op).Project;
-                        // TODO: need to parse the project to determine
-                        // if it is viable to send to query engine :(
+                        if (args.Fields != null) goto default;
+                        var projectOp = (ProjectOp)op;
+                        if (projectOp.RequiresAggregationFramework) goto default;
+                        args.Fields = projectOp.Project;
                         break;
                     default:
                         args = null;

@@ -214,5 +214,70 @@ namespace ScriptCs.MongoDB.FluentApi
             var expected = "find({ }, { \"a\" : 1 }).skip(10).limit(10)";
             subject.Should().Be(expected);
         }
+
+        [Fact]
+        public void Project_with_elemMatch_can_be_query()
+        {
+            var subject = _col.Find().Project("{a: {$elemMatch: {k: 1 }}}").ToString();
+
+            var expected = "find({ }, { \"a\" : { \"$elemMatch\" : { \"k\" : 1 } } })";
+            subject.Should().Be(expected);
+        }
+
+        [Fact]
+        public void Project_with_slice_can_be_query()
+        {
+            var subject = _col.Find().Project("{a: {$slice: 5}}").ToString();
+
+            var expected = "find({ }, { \"a\" : { \"$slice\" : 5 } })";
+            subject.Should().Be(expected);
+        }
+
+        [Fact]
+        public void Project_then_match_cannot_be_a_query()
+        {
+            var subject = _col.Find().Project("{a:1}").Match("{x:1}").ToString();
+
+            AssertPipeline(subject,
+                "{ \"$project\" : { \"a\" : 1 } }",
+                "{ \"$match\" : { \"x\" : 1 } }");
+        }
+
+        [Fact]
+        public void Match_then_project_then_match_cannot_be_a_query()
+        {
+            var subject = _col.Find("{a:1}").Project("{a:1}").Match("{x:1}").ToString();
+
+            AssertPipeline(subject,
+                "{ \"$match\" : { \"a\" : 1 } }",
+                "{ \"$project\" : { \"a\" : 1 } }",
+                "{ \"$match\" : { \"x\" : 1 } }");
+        }
+
+        [Fact]
+        public void Skip_then_match_cannot_be_a_query()
+        {
+            var subject = _col.Find().Skip(10).Match("{x:1}").ToString();
+
+            AssertPipeline(subject,
+                "{ \"$skip\" : 10 }",
+                "{ \"$match\" : { \"x\" : 1 } }");
+        }
+
+        [Fact]
+        public void Project_with_rename_cannot_be_a_query()
+        {
+            var subject = _col.Find().Project("{a: \"b\"}").ToString();
+
+            AssertPipeline(subject,
+                "{ \"$project\" : { \"a\" : \"b\" } }");
+        }
+
+        public void AssertPipeline(string subject, params string[] operators)
+        {
+            var combined = "aggregate([" + string.Join(", ", operators) + "])";
+
+            subject.Should().Be(combined);
+        }
     }
 }
