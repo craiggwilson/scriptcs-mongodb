@@ -12,6 +12,7 @@ namespace ScriptCs.MongoDB.FluentApi
         private static IOptimizer[] _optimizers = new IOptimizer[]
         {
             new MatchSortReorderer(),
+            new ProjectLimitSkipReorderer(),
             new MatchCombiner(),
             new SortCombiner(),
             new SkipLimitCombiner()
@@ -43,6 +44,13 @@ namespace ScriptCs.MongoDB.FluentApi
             return copy;
         }
 
+        public Pipeline AddProject(BsonDocument project)
+        {
+            var copy = Copy();
+            copy.Push(new ProjectOp(project));
+            return copy;
+        }
+
         public Pipeline AddSkip(int count)
         {
             var copy = Copy();
@@ -70,6 +78,7 @@ namespace ScriptCs.MongoDB.FluentApi
                 switch (op.OpType)
                 {
                     case OpType.Match:
+                        if (args.Fields != null) goto default;
                         if (args.Filter != null) goto default;
                         if (args.Limit != null) goto default;
                         if (args.Skip != null) goto default;
@@ -85,10 +94,16 @@ namespace ScriptCs.MongoDB.FluentApi
                         args.Skip = ((SkipOp)op).Count;
                         break;
                     case OpType.Sort:
+                        if (args.Fields != null) goto default;
                         if (args.Limit != null) goto default;
                         if (args.Skip != null) goto default;
                         if (args.OrderBy != null) goto default;
                         args.OrderBy = ((SortOp)op).Sort;
+                        break;
+                    case OpType.Project:
+                        args.Fields = ((ProjectOp)op).Project;
+                        // TODO: need to parse the project to determine
+                        // if it is viable to send to query engine :(
                         break;
                     default:
                         args = null;

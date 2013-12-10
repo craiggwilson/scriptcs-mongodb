@@ -196,5 +196,23 @@ namespace ScriptCs.MongoDB.FluentApi
             var expected = "find({ }).skip(6).limit(4)";
             subject.Should().Be(expected);
         }
+
+        [Fact]
+        public void Project_then_skip_should_be_reordered()
+        {
+            var subject = _col.Find().Project("{a:1}").Skip(10).ToString();
+
+            var expected = "find({ }, { \"a\" : 1 }).skip(10)";
+            subject.Should().Be(expected);
+        }
+
+        [Fact]
+        public void Limit_then_project_then_skip_should_be_reordered()
+        {
+            var subject = _col.Find().Limit(20).Project("{a:1}").Skip(10).ToString();
+
+            var expected = "find({ }, { \"a\" : 1 }).skip(10).limit(10)";
+            subject.Should().Be(expected);
+        }
     }
 }

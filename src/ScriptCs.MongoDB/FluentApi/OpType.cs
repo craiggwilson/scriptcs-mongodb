@@ -11,6 +11,7 @@ namespace ScriptCs.MongoDB.FluentApi
         Match,
         Skip,
         Limit,
-        Sort
+        Sort,
+        Project
     }
 }

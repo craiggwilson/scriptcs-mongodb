@@ -9,6 +9,7 @@ namespace ScriptCs.MongoDB.FluentApi
 {
     internal class QueryArgs
     {
+        public BsonDocument Fields;
         public BsonDocument Filter;
         public int? Limit;
         public BsonDocument OrderBy;

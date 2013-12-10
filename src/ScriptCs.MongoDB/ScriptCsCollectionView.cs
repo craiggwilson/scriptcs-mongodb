@@ -110,6 +110,21 @@ namespace ScriptCs.MongoDB
                 _pipeline.AddMatch(filter));
         }
 
+        public ScriptCsCollectionView Project(string project)
+        {
+            return Project(JsonParser.Parse(project));
+        }
+
+        public ScriptCsCollectionView Project(BsonDocument project)
+        {
+            return new ScriptCsCollectionView(
+                _session,
+                _collectionNamespace,
+                _readPreference,
+                _writeConcern,
+                _pipeline.AddProject(project));
+        }
+
         public BsonDocument PutOne(string document)
         {
             return PutOne(JsonParser.Parse(document));
@@ -249,7 +264,13 @@ namespace ScriptCs.MongoDB
             if(_pipeline.TryGetQueryArgs(out args))
             {
                 var ops = new List<string>();
-                ops.Add("find(" + (args.Filter ?? new BsonDocument()) + ")");
+                var find = "find(" + (args.Filter ?? new BsonDocument()).ToString();
+                if (args.Fields != null)
+                    find += ", " + args.Fields + ")";
+                else
+                    find += ")";
+
+                ops.Add(find);
                 if (args.OrderBy != null)
                     ops.Add("sort(" + args.OrderBy + ")");
                 if (args.Skip.HasValue)

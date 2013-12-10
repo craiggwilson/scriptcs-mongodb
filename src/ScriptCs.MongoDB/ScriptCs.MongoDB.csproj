@@ -53,10 +53,12 @@
     <Compile Include="FluentApi\Op.cs" />
     <Compile Include="FluentApi\OpType.cs" />
     <Compile Include="FluentApi\Pipeline.cs" />
+    <Compile Include="FluentApi\ProjectLimitSkipReorderer.cs" />
     <Compile Include="FluentApi\QueryArgs.cs" />
     <Compile Include="FluentApi\SkipLimitCombiner.cs" />
     <Compile Include="FluentApi\SkipOp.cs" />
     <Compile Include="FluentApi\SortCombiner.cs" />
+    <Compile Include="FluentApi\ProjectOp.cs" />
     <Compile Include="FluentApi\SortOp.cs" />
     <Compile Include="JsonParser.cs" />
     <Compile Include="ScriptCsCollection.cs" />
