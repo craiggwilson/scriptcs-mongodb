@@ -37,6 +37,19 @@ namespace ScriptCs.MongoDB
             _writeConcern = writeConcern;
         }
 
+        public IEnumerable<BsonDocument> Insert(string document, params string[] documents)
+        {
+            if (document == null) throw new ArgumentNullException("document");
+
+            BsonDocument[] others = null;
+            if (documents != null)
+                others = documents.Select(x => JsonParser.Parse(x)).ToArray();
+
+            return Insert(
+                JsonParser.Parse(document),
+                others);
+        }
+
         public IEnumerable<BsonDocument> Insert<T>(T document, params T[] documents) where T : class
         {
             if (document == null) throw new ArgumentNullException("document");
@@ -70,6 +83,11 @@ namespace ScriptCs.MongoDB
         }
 
         public ScriptCsCollectionView Find(string filter)
+        {
+            return Find().Match(filter);
+        }
+
+        public ScriptCsCollectionView Find(BsonDocument filter)
         {
             return Find().Match(filter);
         }

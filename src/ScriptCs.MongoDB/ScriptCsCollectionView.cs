@@ -97,15 +97,25 @@ namespace ScriptCs.MongoDB
 
         public ScriptCsCollectionView Match(string filter)
         {
+            return Match(JsonParser.Parse(filter));
+        }
+
+        public ScriptCsCollectionView Match(BsonDocument filter)
+        {
             return new ScriptCsCollectionView(
                 _session,
                 _collectionNamespace,
                 _readPreference,
                 _writeConcern,
-                _pipeline.AddMatch(ParameterizingJsonParser.Parse(filter)));
+                _pipeline.AddMatch(filter));
         }
 
         public BsonDocument PutOne(string document)
+        {
+            return PutOne(JsonParser.Parse(document));
+        }
+
+        public BsonDocument PutOne(BsonDocument document)
         {
             var args = GetQueryArgsForWriteOperation();
 
@@ -115,7 +125,7 @@ namespace ScriptCs.MongoDB
                 Session = _session,
                 IsMulti = false,
                 Query = args.Filter,
-                Update = ParameterizingJsonParser.Parse(document),
+                Update = document,
                 Upsert = true
             };
 
@@ -140,6 +150,23 @@ namespace ScriptCs.MongoDB
             return result == null ? null : result.Response;
         }
 
+        public BsonDocument RemoveOne()
+        {
+            var args = GetQueryArgsForWriteOperation();
+
+            var removeOp = new RemoveOperation
+            {
+                Collection = _collectionNamespace,
+                Session = _session,
+                Query = args.Filter ?? new BsonDocument(),
+                IsMulti = false,
+                WriteConcern = _writeConcern
+            };
+
+            var result = removeOp.Execute();
+            return result == null ? null : result.Response;
+        }
+
         public T SingleOrDefault<T>() where T : class
         {
             return Limit(1).AsEnumerable<T>().FirstOrDefault();
@@ -157,15 +184,25 @@ namespace ScriptCs.MongoDB
 
         public ScriptCsCollectionView Sort(string sort)
         {
+            return Sort(JsonParser.Parse(sort));
+        }
+
+        public ScriptCsCollectionView Sort(BsonDocument sort)
+        {
             return new ScriptCsCollectionView(
                 _session,
                 _collectionNamespace,
                 _readPreference,
                 _writeConcern,
-                _pipeline.AddSort(ParameterizingJsonParser.Parse(sort)));
+                _pipeline.AddSort(sort));
         }
 
         public BsonDocument Update(string update)
+        {
+            return Update(JsonParser.Parse(update));
+        }
+
+        public BsonDocument Update(BsonDocument update)
         {
             var args = GetQueryArgsForWriteOperation();
 
@@ -175,7 +212,7 @@ namespace ScriptCs.MongoDB
                 Session = _session,
                 IsMulti = !args.Limit.HasValue,
                 Query = args.Filter,
-                Update = ParameterizingJsonParser.Parse(update),
+                Update = update,
                 Upsert = false
             };
 
@@ -183,7 +220,12 @@ namespace ScriptCs.MongoDB
             return result == null ? null : result.Response;
         }
 
-        public BsonDocument Upsert(string update)
+        public BsonDocument Upsert(string upsert)
+        {
+            return Upsert(JsonParser.Parse(upsert));
+        }
+
+        public BsonDocument Upsert(BsonDocument upsert)
         {
             var args = GetQueryArgsForWriteOperation();
 
@@ -193,8 +235,8 @@ namespace ScriptCs.MongoDB
                 Session = _session,
                 IsMulti = !args.Limit.HasValue,
                 Query = args.Filter,
-                Update = ParameterizingJsonParser.Parse(update),
-                Upsert = false
+                Update = upsert,
+                Upsert = true
             };
 
             var result = updateOp.Execute();
@@ -234,6 +276,11 @@ namespace ScriptCs.MongoDB
             if (args.Limit.HasValue && args.Limit.Value != 1)
             {
                 throw new NotSupportedException("Limit must either be unspecified or equal 1 when writing documents.");
+            }
+            
+            if(args.Limit.HasValue && args.OrderBy != null)
+            {
+                throw new NotSupportedException("Limit cannot be specified in conjunction with a sort when writing documents.");
             }
 
             if (args.Skip.HasValue)

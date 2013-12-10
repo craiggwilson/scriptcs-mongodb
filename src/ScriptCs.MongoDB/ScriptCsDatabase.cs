@@ -61,11 +61,16 @@ namespace ScriptCs.MongoDB
 
         public BsonDocument RunCommand(string command)
         {
+            return RunCommand(JsonParser.Parse(command));
+        }
+
+        public BsonDocument RunCommand(BsonDocument command)
+        {
             var commandOp = new GenericCommandOperation<CommandResult>
             {
                 Database = _dbNamespace,
                 Session = _session,
-                Command = ParameterizingJsonParser.Parse(command),
+                Command = command,
                 ReadPreference = _readPreference
             };
 
